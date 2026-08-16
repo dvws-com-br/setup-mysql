@@ -70,7 +70,6 @@ describe('main', () => {
         expect(createSql).toBe(`CREATE DATABASE \`${dbName}\``);
 
         expect(mockCore.exportVariable).toHaveBeenCalledWith('DB_DATABASE', dbName);
-        expect(mockCore.exportVariable).toHaveBeenCalledWith('CI_PREFIX_DB', 'test_1234_unit__');
         expect(mockCore.setOutput).toHaveBeenCalledWith('database', dbName);
         expect(mockCore.saveState).toHaveBeenCalledWith('envName', 'DB_DATABASE');
         expect(mockCore.saveState).toHaveBeenCalledWith('database', dbName);

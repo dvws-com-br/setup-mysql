@@ -144,7 +144,6 @@ async function run() {
         await connection.end();
     }
     core.exportVariable(envName, dbName);
-    core.exportVariable('CI_PREFIX_DB', prefix);
     core.setOutput('database', dbName);
     core.saveState('envName', envName);
     core.saveState('database', dbName);

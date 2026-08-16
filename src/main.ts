@@ -26,7 +26,6 @@ export async function run(): Promise<void> {
     }
 
     core.exportVariable(envName, dbName);
-    core.exportVariable('CI_PREFIX_DB', prefix);
 
     core.setOutput('database', dbName);
 
