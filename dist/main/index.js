@@ -135,8 +135,7 @@ async function run() {
     const prefix = core.getInput('database-prefix');
     const envName = core.getInput('env-name');
     const suffix = (0, crypto_1.randomBytes)(3).toString('hex');
-    const basePrefix = `${prefix}${process.env.GITHUB_RUN_ID}_${process.env.GITHUB_JOB}_`;
-    const dbName = `${basePrefix}_${suffix}`;
+    const dbName = `${prefix}${suffix}`;
     const connection = await mysql.createConnection(config);
     try {
         await (0, db_1.createDatabase)(connection, dbName);
@@ -145,11 +144,11 @@ async function run() {
         await connection.end();
     }
     core.exportVariable(envName, dbName);
-    core.exportVariable('CI_PREFIX_DB', basePrefix);
+    core.exportVariable('CI_PREFIX_DB', prefix);
     core.setOutput('database', dbName);
     core.saveState('envName', envName);
     core.saveState('database', dbName);
-    core.saveState('database_prefix', basePrefix);
+    core.saveState('database_prefix', prefix);
     core.saveState('host', config.host);
     core.saveState('port', String(config.port));
     core.saveState('user', config.user);

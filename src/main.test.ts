@@ -27,9 +27,6 @@ describe('main', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
-        process.env.GITHUB_RUN_ID = '1234';
-        process.env.GITHUB_JOB = 'unit';
-
         mockCore.getInput.mockImplementation((name) => {
             switch (name) {
                 case 'host':
@@ -41,7 +38,7 @@ describe('main', () => {
                 case 'password':
                     return 'secret';
                 case 'database-prefix':
-                    return 'test_';
+                    return 'test_1234_unit__';
                 case 'env-name':
                     return 'DB_DATABASE';
                 default:
@@ -51,11 +48,6 @@ describe('main', () => {
 
         mockMysql.createConnection.mockResolvedValue(mockQuery);
         mockQuery.query.mockResolvedValue([[], []]);
-    });
-
-    afterEach(() => {
-        delete process.env.GITHUB_RUN_ID;
-        delete process.env.GITHUB_JOB;
     });
 
     it('creates a unique database and exports the expected variables', async () => {
@@ -78,11 +70,11 @@ describe('main', () => {
         expect(createSql).toBe(`CREATE DATABASE \`${dbName}\``);
 
         expect(mockCore.exportVariable).toHaveBeenCalledWith('DB_DATABASE', dbName);
-        expect(mockCore.exportVariable).toHaveBeenCalledWith('CI_PREFIX_DB', 'test_1234_unit_');
+        expect(mockCore.exportVariable).toHaveBeenCalledWith('CI_PREFIX_DB', 'test_1234_unit__');
         expect(mockCore.setOutput).toHaveBeenCalledWith('database', dbName);
         expect(mockCore.saveState).toHaveBeenCalledWith('envName', 'DB_DATABASE');
         expect(mockCore.saveState).toHaveBeenCalledWith('database', dbName);
-        expect(mockCore.saveState).toHaveBeenCalledWith('database_prefix', 'test_1234_unit_');
+        expect(mockCore.saveState).toHaveBeenCalledWith('database_prefix', 'test_1234_unit__');
         expect(mockCore.saveState).toHaveBeenCalledWith('host', 'localhost');
         expect(mockCore.saveState).toHaveBeenCalledWith('port', '3306');
         expect(mockCore.saveState).toHaveBeenCalledWith('user', 'root');

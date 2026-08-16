@@ -57,6 +57,6 @@ jobs:
           port: 3306
           username: root
           password: root
-          database-prefix: test_
+          database-prefix: test_${{ github.run_id }}_${{ github.job }}__
           env-name: TEST_DB
 

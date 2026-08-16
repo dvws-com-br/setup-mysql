@@ -15,8 +15,7 @@ export async function run(): Promise<void> {
     const envName = core.getInput('env-name');
 
     const suffix = randomBytes(3).toString('hex');
-    const basePrefix = `${prefix}${process.env.GITHUB_RUN_ID}_${process.env.GITHUB_JOB}_`;
-    const dbName = `${basePrefix}_${suffix}`;
+    const dbName = `${prefix}${suffix}`;
 
     const connection = await mysql.createConnection(config);
 
@@ -27,13 +26,13 @@ export async function run(): Promise<void> {
     }
 
     core.exportVariable(envName, dbName);
-    core.exportVariable('CI_PREFIX_DB', basePrefix);
+    core.exportVariable('CI_PREFIX_DB', prefix);
 
     core.setOutput('database', dbName);
 
     core.saveState('envName', envName);
     core.saveState('database', dbName);
-    core.saveState('database_prefix', basePrefix);
+    core.saveState('database_prefix', prefix);
     core.saveState('host', config.host);
     core.saveState('port', String(config.port));
     core.saveState('user', config.user);
