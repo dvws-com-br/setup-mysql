@@ -11,7 +11,7 @@ finishes.
 steps:
   - uses: actions/checkout@v4
 
-  - uses: <owner>/setup-mysql@<version>
+  - uses: dvws-com-br/setup-mysql@<version>
     with:
       host: 127.0.0.1
       port: 3306
