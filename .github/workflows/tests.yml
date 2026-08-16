@@ -8,9 +8,7 @@ on:
 jobs:
   unit:
     name: Unit tests and lint
-    runs-on:
-      - self-hosted
-      - Linux
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -35,24 +33,30 @@ jobs:
   action:
     name: Action smoke test
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_ROOT_HOST: "%"
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -u root -proot"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
     steps:
       - uses: actions/checkout@v4
-
-      - name: Check MySQL connectivity
-        run: |
-          nc -zv -w 5 "$DB_HOST" "$DB_PORT"
-        env:
-          DB_HOST: ${{ secrets.MYSQL_HOST }}
-          DB_PORT: ${{ secrets.MYSQL_PORT }}
 
       - name: Run the action
         id: setup-mysql
         uses: ./
         with:
-          host: ${{ secrets.MYSQL_HOST }}
-          port: ${{ secrets.MYSQL_PORT }}
-          username: ${{ secrets.MYSQL_USER }}
-          password: ${{ secrets.MYSQL_PASSWORD }}
-          database-prefix: ${{ secrets.MYSQL_DATABASE_PREFIX }}
+          host: 127.0.0.1
+          port: 3306
+          username: root
+          password: root
+          database-prefix: test_
           env-name: TEST_DB
 
