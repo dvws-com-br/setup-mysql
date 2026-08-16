@@ -38,6 +38,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check MySQL connectivity
+        run: |
+          nc -zv -w 5 "$DB_HOST" "$DB_PORT"
+        env:
+          DB_HOST: ${{ secrets.MYSQL_HOST }}
+          DB_PORT: ${{ secrets.MYSQL_PORT }}
+
       - name: Run the action
         id: setup-mysql
         uses: ./
